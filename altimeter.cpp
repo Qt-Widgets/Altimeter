@@ -45,7 +45,7 @@ Altimeter::Altimeter(QWidget *parent) :
     this->setGeometry(0,0, WIDGETSIZE, WIDGETSIZE);
 
     // Style Setting
-    backgroundBrush = QBrush(QColor(0x53, 0x54, 0x48));
+    backgroundBrush = QBrush(Qt::black);//QBrush(QColor(0x53, 0x54, 0x48));
     circlePen       = QPen(Qt::black);
     circlePen.setWidth(CIRCLEPENWIDTH);
     graduationPen   = QPen(Qt::white);
@@ -110,7 +110,7 @@ Altimeter::Altimeter(QWidget *parent) :
     // Hand front
     painter.setBrush(handBrushFront);
     painter.setPen(handPenFront);
-    painter.drawRect(QRect(HANDCENTERX-1, CIRCLEPENWIDTH+5, 2, 15));
+    painter.drawRect(QRect(HANDCENTERX-2, CIRCLEPENWIDTH+5, 4, 16));
     painter.drawRect(QRect(
                          QPoint(HANDCENTERX-3, CIRCLEPENWIDTH+5+15),
                          QPoint(HANDCENTERX+3, HANDCENTERY))
