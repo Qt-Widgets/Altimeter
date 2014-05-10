@@ -46,7 +46,7 @@ Altimeter::Altimeter(QWidget *parent) :
 
     // Style Setting
     backgroundBrush = QBrush(Qt::black);//QBrush(QColor(0x53, 0x54, 0x48));
-    circlePen       = QPen(Qt::black);
+    circlePen       = QPen(Qt::white);
     circlePen.setWidth(CIRCLEPENWIDTH);
     graduationPen   = QPen(Qt::white);
     graduationPen.setWidth(2);
