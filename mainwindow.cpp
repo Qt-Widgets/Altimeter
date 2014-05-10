@@ -26,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    a = new Altimeter(ui->centralWidget);
+    a->setAltitude(56);
+    a->show();
 }
 
 MainWindow::~MainWindow()

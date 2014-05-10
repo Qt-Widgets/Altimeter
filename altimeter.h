@@ -22,6 +22,10 @@
 #define ALTIMETER_H
 
 #include <QGraphicsView>
+#include <QPixmap>
+#include <QBrush>
+#include <QPen>
+#include <QFont>
 
 class Altimeter : public QGraphicsView
 {
@@ -32,6 +36,22 @@ public:
 signals:
 
 public slots:
+    void setAltitude(double feets);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+
+private:
+    void paint(QPainter *painter, QPaintEvent *event);
+
+    double feets;
+
+    QBrush  backgroundBrush;
+    QPen    circlePen;
+    QPixmap backgroundPixmap;
+    QPen    graduationPen;
+    QFont   graduationFont;
+
 
 };
 

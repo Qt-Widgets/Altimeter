@@ -23,6 +23,8 @@
 
 #include <QMainWindow>
 
+#include "altimeter.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -37,6 +39,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    Altimeter *a;
 };
 
 #endif // MAINWINDOW_H
