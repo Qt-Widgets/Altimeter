@@ -19,14 +19,24 @@
  * */
 
 #include "altimeter.h"
+#include <QBitmap>
+#include <QPolygon>
 
 #define WIDGETSIZE      (200)
 #define CIRCLEPENWIDTH  (4)
+
+#define HANDHEIGHT      (140)
+#define HANDWIDTH       (25)
+#define HANDCENTERX     (HANDWIDTH/2)
+#define HANDCENTERY     (105)
+#define HANDCENTER      (QPoint(HANDCENTERX, HANDCENTERY))
 
 Altimeter::Altimeter(QWidget *parent) :
     QGraphicsView(parent),
     feets(0)
 {
+    QPolygon polygon; // helper
+
     this->setGeometry(0,0, WIDGETSIZE, WIDGETSIZE);
 
     // Style Setting
@@ -38,6 +48,12 @@ Altimeter::Altimeter(QWidget *parent) :
     graduationFont  = QFont("lucida");
     graduationFont.setPointSize(12);
     graduationFont.setBold(true);
+    handPenFront    = QPen(Qt::black);
+    handPenFront.setWidth(2);
+    handPenBack     = QPen(Qt::white);
+    handPenBack.setWidth(2);
+    handBrushBack   = QBrush(Qt::black);
+    handBrushFront  = QBrush(Qt::white);
 
     // BACKGROUND PIXMAP
     backgroundPixmap = QPixmap(WIDGETSIZE,WIDGETSIZE);
@@ -77,6 +93,73 @@ Altimeter::Altimeter(QWidget *parent) :
     }
     painter.restore();
     painter.end();
+
+    // HAND, FEETS
+    feetsHand = QPixmap(HANDWIDTH, HANDHEIGHT);
+    painter.begin(&(this->feetsHand)); // removing antialiasing on painter, removes mask artifacts
+    painter.fillRect(feetsHand.rect(), Qt::red);
+    // Hand front
+    painter.setBrush(handBrushFront);
+    painter.setPen(handPenFront);
+    painter.drawRect(QRect(HANDCENTERX-1, CIRCLEPENWIDTH+5, 2, 15));
+    painter.drawRect(QRect(
+                         QPoint(HANDCENTERX-3, CIRCLEPENWIDTH+5+15),
+                         QPoint(HANDCENTERX+3, HANDCENTERY))
+                     );
+    // Hand back
+    painter.setBrush(handBrushBack);
+    painter.setPen(handPenBack);
+    painter.drawRect(HANDCENTERX-3, HANDCENTERY, 6, 25);
+    painter.drawEllipse(QPoint(HANDCENTERX, HANDCENTERY+25), 6, 6);
+    painter.end();
+    // Mask
+    feetsHand.setMask(feetsHand.createMaskFromColor(Qt::red, Qt::MaskInColor));
+
+    // HAND, TENTH of FEETS
+    tenthHand = QPixmap(HANDWIDTH, HANDHEIGHT);
+    painter.begin(&(this->tenthHand));
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.fillRect(tenthHand.rect(), QColor(0x53, 0x54, 0x48));
+    // Hand front
+    painter.setBrush(handBrushFront);
+    painter.setPen(handPenFront);
+    polygon.append(HANDCENTER);
+    polygon.append(QPoint(HANDCENTERX-10, HANDCENTERY-25));
+    polygon.append(QPoint(HANDCENTERX, HANDCENTERY-75));
+    polygon.append(QPoint(HANDCENTERX+10, HANDCENTERY-25));
+    painter.drawPolygon(polygon);
+    // Hand back
+    painter.setBrush(handBrushBack);
+    painter.setPen(handPenBack);
+    polygon.clear();
+    polygon.append(HANDCENTER);
+    polygon.append(QPoint(HANDCENTERX-10, HANDCENTERY+25));
+    polygon.append(QPoint(HANDCENTERX+10, HANDCENTERY+25));
+    painter.drawPolygon(polygon);
+    painter.end();
+    // Mask
+    tenthHand.setMask(tenthHand.createMaskFromColor(QColor(0x53, 0x54, 0x48), Qt::MaskInColor));
+
+    // HAND, HUNDREDS of FEETS
+    hundredsHand = QPixmap(HANDWIDTH, HANDHEIGHT);
+    painter.begin(&(this->hundredsHand));
+    painter.fillRect(tenthHand.rect(), Qt::red);
+    // Hand front
+    painter.setBrush(handBrushFront);
+    painter.setPen(handPenFront);
+    painter.drawRect(QRect(HANDCENTERX-2, CIRCLEPENWIDTH+5, 4, HANDCENTERY-CIRCLEPENWIDTH-5));
+    polygon.clear();
+    polygon.append(QPoint(HANDCENTERX-10, CIRCLEPENWIDTH+5));
+    polygon.append(QPoint(HANDCENTERX+10, CIRCLEPENWIDTH+5));
+    polygon.append(QPoint(HANDCENTERX, CIRCLEPENWIDTH+5+15));
+    painter.drawPolygon(polygon);
+    // Hand back
+    painter.setBrush(handBrushBack);
+    painter.setPen(handPenBack);
+    painter.end();
+    // Mask
+    hundredsHand.setMask(hundredsHand.createMaskFromColor(Qt::red, Qt::MaskInColor));
+
 }
 
 void Altimeter::setAltitude(double feets)
@@ -100,4 +183,27 @@ void Altimeter::paintEvent(QPaintEvent *event)
 void Altimeter::paint(QPainter *painter, QPaintEvent *event)
 {
     painter->drawPixmap(0,0, backgroundPixmap);
+    painter->translate(WIDGETSIZE/2, WIDGETSIZE/2);
+
+    // Feets
+    painter->save();
+    painter->rotate(45);
+    painter->drawPixmap(-HANDWIDTH/2, -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5, feetsHand);
+    painter->restore();
+
+    // Tenth of feets
+    painter->save();
+    painter->rotate(270);
+    painter->drawPixmap(-HANDWIDTH/2, -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5, tenthHand);
+    painter->restore();
+
+    // Hundreds of feets
+    painter->save();
+    painter->rotate(0);
+    painter->drawPixmap(-HANDWIDTH/2, -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5, hundredsHand);
+    painter->restore();
+
+    // Center circle
+    painter->setBrush(handBrushBack);
+    painter->drawEllipse(QPoint(0,0), 6, 6);
 }

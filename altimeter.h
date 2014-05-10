@@ -52,6 +52,14 @@ private:
     QPen    graduationPen;
     QFont   graduationFont;
 
+    QPen    handPenFront;
+    QPen    handPenBack;
+    QBrush  handBrushFront;
+    QBrush  handBrushBack;
+    QPixmap feetsHand;
+    QPixmap tenthHand;
+    QPixmap hundredsHand;
+
 
 };
 
