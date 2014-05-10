@@ -213,7 +213,7 @@ void Altimeter::paint(QPainter *painter, QPaintEvent *event)
 
     // Feets
     painter->save();
-    painter->rotate(45);
+    painter->rotate(feets * 36);
     painter->drawPixmap(
                 -HANDWIDTH/2,
                 -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5,
@@ -223,7 +223,7 @@ void Altimeter::paint(QPainter *painter, QPaintEvent *event)
 
     // Tenth of feets
     painter->save();
-    painter->rotate(270);
+    painter->rotate(feets * 3.6);
     painter->drawPixmap(
                 -HANDWIDTH/2,
                 -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5,
@@ -233,7 +233,7 @@ void Altimeter::paint(QPainter *painter, QPaintEvent *event)
 
     // Hundreds of feets
     painter->save();
-    painter->rotate(0);
+    painter->rotate(feets * 0.36);
     painter->drawPixmap(
                 -HANDWIDTH/2,
                 -(WIDGETSIZE/2-CIRCLEPENWIDTH)-5,
